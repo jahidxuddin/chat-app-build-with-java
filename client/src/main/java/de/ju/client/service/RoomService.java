@@ -4,21 +4,17 @@ import de.ju.client.models.Room;
 import de.ju.client.networking.RoomClient;
 
 import java.io.IOException;
-import java.util.Optional;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
+import java.util.Collections;
 
 public class RoomService {
-    private final BlockingQueue<Room> roomBlockingQueue;
-
-    public RoomService() {
-        this.roomBlockingQueue = new ArrayBlockingQueue<>(1);
-    }
+    private volatile Room roomData;
 
     public boolean joinRoom(String hostname, int port) {
+        this.roomData = new Room(hostname, port, Collections.emptyList(), Collections.emptyList());
+
         RoomClient roomClient;
         try {
-            roomClient = new RoomClient(hostname, port, this.roomBlockingQueue);
+            roomClient = new RoomClient(this.roomData);
         } catch (IOException e) {
             return false;
         }
@@ -29,15 +25,11 @@ public class RoomService {
         return true;
     }
 
-    public Optional<Room> getRoomData() {
-        try {
-            return Optional.of(this.roomBlockingQueue.take());
-        } catch (InterruptedException e) {
-            return Optional.empty();
-        }
+    public Room getRoomData() {
+        return this.roomData;
     }
 
-    public void updateRoomData(Room roomData) throws InterruptedException {
-        this.roomBlockingQueue.put(roomData);
+    public void setRoomData(Room roomData) {
+        this.roomData = roomData;
     }
 }

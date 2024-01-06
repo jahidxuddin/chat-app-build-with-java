@@ -3,12 +3,10 @@ package de.ju.client.gui;
 import de.ju.client.gui.components.RoomMessages;
 import de.ju.client.gui.components.RoomInput;
 import de.ju.client.gui.components.RoomTitle;
-import de.ju.client.models.Room;
 import de.ju.client.service.RoomService;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Optional;
 
 public class RoomWindow extends JFrame {
     private final RoomService service;
@@ -22,27 +20,25 @@ public class RoomWindow extends JFrame {
             System.exit(0);
         }
 
-        Optional<Room> roomData =  service.getRoomData();
-        roomData.ifPresent(this::setupWindow);
+        setupWindow();
     }
 
-    private void setupWindow(Room room) {
-        this.setTitle(room.hostname() + " - Chat App");
+    private void setupWindow() {
+        this.setTitle(service.getRoomData().hostname() + " - Chat App");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(new Dimension(375, 750));
         this.setMinimumSize(new Dimension(getWidth(), getHeight()));
-        this.setResizable(true);
-        this.setupContentPane(room);
+        this.setupContentPane();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
     }
 
-    private void setupContentPane(Room room) {
+    private void setupContentPane() {
         this.getContentPane().setBackground(new Color(16, 20, 28));
         this.getContentPane().setLayout(new BorderLayout());
 
         this.getContentPane().add(new RoomTitle(), BorderLayout.NORTH);
-        this.getContentPane().add(new RoomMessages(room.messages()), BorderLayout.CENTER);
-        this.getContentPane().add(new RoomInput(), BorderLayout.SOUTH);
+        this.getContentPane().add(new RoomMessages(service.getRoomData().messages()), BorderLayout.CENTER);
+        this.getContentPane().add(new RoomInput(this.service), BorderLayout.SOUTH);
     }
 }
