@@ -52,4 +52,3 @@ public class RoomClient implements Runnable {
         }
     }
 }
-// Wieso stummst du dich? <-- Antwort?
