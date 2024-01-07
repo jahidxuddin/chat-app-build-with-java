@@ -7,14 +7,19 @@ import java.io.IOException;
 import java.util.Collections;
 
 public class RoomService {
-    private volatile Room roomData;
+    private final Object lock;
+    private Room roomData;
+
+    public RoomService() {
+        this.lock = new Object();
+    }
 
     public boolean joinRoom(String hostname, int port) {
         this.roomData = new Room(hostname, port, Collections.emptyList(), Collections.emptyList());
 
         RoomClient roomClient;
         try {
-            roomClient = new RoomClient(this.roomData);
+            roomClient = new RoomClient(this.lock, this.roomData);
         } catch (IOException e) {
             return false;
         }
@@ -30,6 +35,12 @@ public class RoomService {
     }
 
     public void setRoomData(Room roomData) {
-        this.roomData = roomData;
+        synchronized (lock) {
+            this.roomData.setHostname(roomData.getHostname());
+            this.roomData.setPort(roomData.getPort());
+            this.roomData.setUser(roomData.getUser());
+            this.roomData.setMessages(roomData.getMessages());
+            lock.notify();
+        }
     }
 }

@@ -24,7 +24,7 @@ public class RoomWindow extends JFrame {
     }
 
     private void setupWindow() {
-        this.setTitle(service.getRoomData().hostname() + " - Chat App");
+        this.setTitle(service.getRoomData().getHostname() + " - Chat App");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(new Dimension(375, 750));
         this.setMinimumSize(new Dimension(getWidth(), getHeight()));
@@ -38,7 +38,7 @@ public class RoomWindow extends JFrame {
         this.getContentPane().setLayout(new BorderLayout());
 
         this.getContentPane().add(new RoomTitle(), BorderLayout.NORTH);
-        this.getContentPane().add(new RoomMessages(service.getRoomData().messages()), BorderLayout.CENTER);
+        this.getContentPane().add(new RoomMessages(service.getRoomData().getMessages()), BorderLayout.CENTER);
         this.getContentPane().add(new RoomInput(this.service), BorderLayout.SOUTH);
     }
 }

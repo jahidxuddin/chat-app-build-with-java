@@ -52,10 +52,10 @@ public class RoomInput extends JPanel {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER && !inputTextField.getText().isEmpty()) {
                     Room roomData = service.getRoomData();
 
-                    List<Message> messages = new ArrayList<>(roomData.messages());
+                    List<Message> messages = new ArrayList<>(roomData.getMessages());
                     messages.add(new Message(inputTextField.getText(), "ju_dev", LocalDateTime.now()));
 
-                    service.setRoomData(new Room(roomData.hostname(), roomData.port(), roomData.user(), messages));
+                    service.setRoomData(new Room(roomData.getHostname(), roomData.getPort(), roomData.getUser(), messages));
 
                     inputTextField.setText("");
                 }
