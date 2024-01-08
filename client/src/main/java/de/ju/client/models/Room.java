@@ -1,6 +1,7 @@
 package de.ju.client.models;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Room {
     private String hostname;
@@ -47,13 +48,20 @@ public class Room {
         this.messages = messages;
     }
 
+    public boolean compareValues(Room room) {
+        return this.hostname.equals(room.hostname) &&
+                this.port == room.port &&
+                this.user.equals(room.user) &&
+                this.messages.equals(room.messages);
+    }
+
     @Override
     public String toString() {
-        return "Room{" +
+        return "Room[" +
                 "hostname='" + hostname + '\'' +
                 ", port=" + port +
                 ", user=" + user +
                 ", messages=" + messages +
-                '}';
+                ']';
     }
 }

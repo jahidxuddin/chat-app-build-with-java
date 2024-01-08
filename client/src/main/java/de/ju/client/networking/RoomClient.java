@@ -2,52 +2,51 @@ package de.ju.client.networking;
 
 import de.ju.client.models.Room;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.Socket;
 
 public class RoomClient implements Runnable {
     private final Object lock;
     private final Room roomData;
-   // private final Socket socket;
+    private final Socket socket;
 
     public RoomClient(Object lock, Room roomData) throws IOException {
         this.lock = lock;
         this.roomData = roomData;
-        // this.socket = new Socket(roomData.hostname(), roomData.port());
-    }
-
-    private void clearConsole() {
-        try {
-            final String os = System.getProperty("os.name");
-
-            if (os.contains("Windows")) {
-                // For Windows
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-            } else {
-                // For Unix-like operating systems
-                System.out.print("\033[H\033[2J");
-                System.out.flush();
-            }
-        } catch (Exception e) {
-            // Handle exceptions
-            e.printStackTrace();
-        }
+        this.socket = new Socket(roomData.getHostname(), roomData.getPort());
     }
 
     @Override
     public void run() {
-        while (true) {
-            synchronized (lock) {
+        RoomDataReceiver dataReceiver = new RoomDataReceiver(this.lock, this.roomData, this.socket);
+        Thread dataReceiverThread = new Thread(dataReceiver);
+        dataReceiverThread.start();
+
+        DataOutputStream outputStream;
+        try {
+            outputStream = new DataOutputStream(this.socket.getOutputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        Room prevRoomData;
+        while (this.socket.isConnected()) {
+            prevRoomData = this.roomData;
+            synchronized (this.lock) {
                 try {
-                    lock.wait();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    this.lock.wait();
+                } catch (InterruptedException ignored) {
                 }
 
-                if (this.roomData == null) {
+                if (!this.roomData.compareValues(prevRoomData)) {
                     continue;
                 }
 
-                System.out.println(this.roomData);
+                try {
+                    outputStream.writeUTF(roomData.toString());
+                } catch (IOException ignored) {
+                }
             }
         }
     }
