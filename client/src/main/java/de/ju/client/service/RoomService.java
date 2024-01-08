@@ -5,6 +5,7 @@ import de.ju.client.networking.RoomClient;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.UUID;
 
 public class RoomService {
     private final Object lock;
@@ -15,7 +16,7 @@ public class RoomService {
     }
 
     public boolean joinRoom(String hostname, int port) {
-        this.roomData = new Room(hostname, port, Collections.emptyList(), Collections.emptyList());
+        this.roomData = new Room(UUID.randomUUID(), hostname, port, Collections.emptyList(), Collections.emptyList());
 
         RoomClient roomClient;
         try {
@@ -36,6 +37,7 @@ public class RoomService {
 
     public void setRoomData(Room roomData) {
         synchronized (lock) {
+            this.roomData.setId(roomData.getId());
             this.roomData.setHostname(roomData.getHostname());
             this.roomData.setPort(roomData.getPort());
             this.roomData.setUser(roomData.getUser());

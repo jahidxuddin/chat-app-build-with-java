@@ -1,19 +1,29 @@
 package de.ju.client.models;
 
 import java.util.List;
-import java.util.Objects;
+import java.util.UUID;
 
 public class Room {
+    private UUID id;
     private String hostname;
     private int port;
     private List<User> user;
     private List<Message> messages;
 
-    public Room(String hostname, int port, List<User> user, List<Message> messages) {
+    public Room(UUID id, String hostname, int port, List<User> user, List<Message> messages) {
+        this.id = id;
         this.hostname = hostname;
         this.port = port;
         this.user = user;
         this.messages = messages;
+    }
+
+    public synchronized UUID getId() {
+        return id;
+    }
+
+    public synchronized void setId(UUID id) {
+        this.id = id;
     }
 
     public synchronized String getHostname() {

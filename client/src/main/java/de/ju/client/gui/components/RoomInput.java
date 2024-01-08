@@ -55,7 +55,7 @@ public class RoomInput extends JPanel {
                     List<Message> messages = new ArrayList<>(roomData.getMessages());
                     messages.add(new Message(inputTextField.getText(), "ju_dev", LocalDateTime.now()));
 
-                    service.setRoomData(new Room(roomData.getHostname(), roomData.getPort(), roomData.getUser(), messages));
+                    service.setRoomData(new Room(roomData.getId(), roomData.getHostname(), roomData.getPort(), roomData.getUser(), messages));
 
                     inputTextField.setText("");
                 }
