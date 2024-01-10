@@ -16,7 +16,7 @@ public class RoomWindow extends JFrame {
 
         boolean isJoined = this.service.joinRoom("localhost", 1337);
         if (!isJoined) {
-            System.out.println("\nSomething went wrong.");
+            System.out.println("Can't connect to the given host.");
             System.exit(0);
         }
 

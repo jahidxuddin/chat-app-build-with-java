@@ -26,33 +26,36 @@ public class RoomDataReceiver implements Runnable {
 
     @Override
     public void run() {
-        try {
-            DataInputStream inputStream = new DataInputStream(this.socket.getInputStream());
-
+        try(DataInputStream inputStream = new DataInputStream(this.socket.getInputStream())) {
             while (this.socket.isConnected()) {
                 String input = inputStream.readUTF();
-                if (!isValidRoomDataFormat(input)) {
-                    continue;
-                }
-
-                Optional<Room> newRoomDataOptional = jsonToRoomData(input);
-
-                if (newRoomDataOptional.isEmpty()) {
-                    continue;
-                }
-
-                Room newRoomData = newRoomDataOptional.get();
-
-                synchronized (this.lock) {
-                    this.roomData.setHostname(newRoomData.getHostname());
-                    this.roomData.setPort(newRoomData.getPort());
-                    this.roomData.setUser(newRoomData.getUser());
-                    this.roomData.setMessages(newRoomData.getMessages());
-                    this.lock.notify();
-                }
+                handleInput(input);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException ignored) {
+        }
+    }
+
+    private boolean handleInput(String input) {
+        if (!isValidRoomDataFormat(input)) return false;
+
+        Optional<Room> newRoomDataOptional = jsonToRoomData(input);
+        if (newRoomDataOptional.isEmpty()) {
+            return false;
+        }
+
+        updateRoomData(newRoomDataOptional.get());
+        
+        return true;
+    }
+
+    private void updateRoomData(Room newRoomData) {
+        synchronized (this.lock) {
+            this.roomData.setId(newRoomData.getId());
+            this.roomData.setHostname(newRoomData.getHostname());
+            this.roomData.setPort(newRoomData.getPort());
+            this.roomData.setUser(newRoomData.getUser());
+            this.roomData.setMessages(newRoomData.getMessages());
+            this.lock.notify();
         }
     }
 

@@ -16,11 +16,7 @@ public class RoomTitle extends JPanel {
         JLabel titleLabel = new JLabel("LIVE CHAT");
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         titleLabel.setForeground(Color.WHITE);
-        titleLabel.setFont(new Font(
-                titleLabel.getFont().getName(),
-                Font.ITALIC, 20
-                )
-        );
+        titleLabel.setFont(new Font(titleLabel.getFont().getName(), Font.ITALIC, 20));
 
         this.add(titleLabel, BorderLayout.CENTER);
     }

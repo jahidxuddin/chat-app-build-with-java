@@ -4,7 +4,7 @@ import de.ju.client.models.Room;
 import de.ju.client.networking.RoomClient;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class RoomService {
@@ -16,7 +16,7 @@ public class RoomService {
     }
 
     public boolean joinRoom(String hostname, int port) {
-        this.roomData = new Room(UUID.randomUUID(), hostname, port, Collections.emptyList(), Collections.emptyList());
+        this.roomData = new Room(UUID.randomUUID(), hostname, port, new ArrayList<>(), new ArrayList<>());
 
         RoomClient roomClient;
         try {
@@ -25,8 +25,7 @@ public class RoomService {
             return false;
         }
 
-        Thread roomClientThread = new Thread(roomClient);
-        roomClientThread.start();
+        new Thread(roomClient).start();
 
         return true;
     }
