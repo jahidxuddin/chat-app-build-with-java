@@ -1,8 +1,8 @@
 package de.ju.client.gui.components;
 
+import de.ju.client.gui.lib.CustomJTextField;
 import de.ju.client.gui.listener.RoomInputTextFieldKeyListener;
 import de.ju.client.gui.listener.RoomInputTextFieldMouseListener;
-import de.ju.client.gui.utils.CustomJTextField;
 import de.ju.client.service.RoomService;
 
 import javax.swing.*;

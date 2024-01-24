@@ -1,4 +1,4 @@
-package de.ju.client.gui.utils;
+package de.ju.client.gui.lib;
 
 import javax.swing.*;
 import java.awt.*;
